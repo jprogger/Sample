@@ -18,7 +18,7 @@ import com.google.inject.Inject;
 
 import org.jprogger.task.sample.R;
 import org.jprogger.task.sample.event.BasketChangedEvent;
-import org.jprogger.task.sample.model.BasketItem;
+import org.jprogger.task.sample.model.Product;
 
 import java.util.List;
 
@@ -28,10 +28,8 @@ import roboguice.fragment.RoboFragment;
 public class BasketFragment extends RoboFragment {
 
     ListView listView;
-    @Inject
-    EventBus eventBus;
-    @Inject
-    BasketController basketController;
+    @Inject EventBus eventBus;
+    @Inject BasketController basketController;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,7 @@ public class BasketFragment extends RoboFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                basketController.increaseQuantity(((BasketItem) parent.getItemAtPosition(position)));
+                basketController.increaseQuantity(((Product) parent.getItemAtPosition(position)));
             }
         });
         return rootView;
@@ -63,7 +61,7 @@ public class BasketFragment extends RoboFragment {
     public void onResume() {
         super.onResume();
         listView.setAdapter(new BasketItemsAdapter(getActivity(),
-                R.layout.basket_item_view, basketController.getBasket().getItems()));
+                R.layout.basket_item_view, basketController.getBasket().getProducts()));
     }
 
     @Override
@@ -80,7 +78,7 @@ public class BasketFragment extends RoboFragment {
     @SuppressWarnings("unused")
     public void onEventMainThread(BasketChangedEvent event) {
         listView.setAdapter(new BasketItemsAdapter(getActivity(),
-                R.layout.basket_item_view, basketController.getBasket().getItems()));
+                R.layout.basket_item_view, basketController.getBasket().getProducts()));
     }
 
     @Override
@@ -94,14 +92,14 @@ public class BasketFragment extends RoboFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private static class BasketItemsAdapter extends ArrayAdapter<BasketItem> {
+    private static class BasketItemsAdapter extends ArrayAdapter<Product> {
 
         private Context context;
-        private List<BasketItem> items;
+        private List<Product> products;
 
-        public BasketItemsAdapter(Context context, int resource, List<BasketItem> items) {
+        public BasketItemsAdapter(Context context, int resource, List<Product> items) {
             super(context, resource, items);
-            this.items = items;
+            this.products = items;
             this.context = context;
         }
 
@@ -110,7 +108,7 @@ public class BasketFragment extends RoboFragment {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.basket_item_view, null);
             TextView itemView = (TextView) rowView.findViewById(R.id.basket_item_view);
-            itemView.setText(items.get(position).getProduct().getName() + "(" + items.get(position).getQuantity() + ")");
+            itemView.setText(products.get(position).getName() + " (" + products.get(position).getAddedQuantity() + ")");
             return rowView;
         }
     }

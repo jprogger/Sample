@@ -15,6 +15,7 @@ import com.google.inject.Inject;
 import org.jprogger.task.sample.R;
 import org.jprogger.task.sample.basket.BasketController;
 import org.jprogger.task.sample.event.BasketChangedEvent;
+import org.jprogger.task.sample.event.MenuChangedEvent;
 import org.jprogger.task.sample.model.Category;
 import org.jprogger.task.sample.model.Product;
 
@@ -26,12 +27,9 @@ import roboguice.fragment.RoboFragment;
 public class ProductListFragment extends RoboFragment {
 
     ExpandableListView listView;
-    @Inject
-    EventBus eventBus;
-    @Inject
-    MenuController menuController;
-    @Inject
-    BasketController basketController;
+    @Inject EventBus eventBus;
+    @Inject MenuController menuController;
+    @Inject BasketController basketController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,9 +39,8 @@ public class ProductListFragment extends RoboFragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
                 ExpandableListAdapter adapter = parent.getExpandableListAdapter();
-                Category category = (Category) adapter.getGroup(groupPosition);
                 Product product = (Product) adapter.getChild(groupPosition, childPosition);
-                basketController.putToBasket(product, category);
+                basketController.putToBasket(product);
                 return true;
             }
         });
@@ -70,6 +67,11 @@ public class ProductListFragment extends RoboFragment {
 
     @SuppressWarnings("unused")
     public void onEventMainThread(BasketChangedEvent event) {
+        menuController.syncWithBasket(basketController.getBasket());
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(MenuChangedEvent event) {
         ((MenuAdapter) listView.getExpandableListAdapter()).notifyDataSetChanged();
     }
 
@@ -132,7 +134,11 @@ public class ProductListFragment extends RoboFragment {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.child_list_item_view, null);
             TextView productView = (TextView) rowView.findViewById(R.id.product_name);
-            productView.setText(categories.get(groupPosition).getProducts().get(childPosition).getName());
+            Product product = categories.get(groupPosition).getProducts().get(childPosition);
+            productView.setText(new StringBuilder()
+                    .append(product.getName())
+                    .append(product.isAdded() ? "(" + product.getAddedQuantity() + ")" : "")
+                    .toString());
             return rowView;
         }
 

@@ -11,29 +11,32 @@ import java.util.Set;
 @Singleton
 public class Basket {
 
-    private Set<BasketItem> itemSet = new HashSet<BasketItem>();
+    private Set<Product> itemSet = new HashSet<Product>();
 
-    public List<BasketItem> getItems() {
-        return new ArrayList<BasketItem>(itemSet);
+    public List<Product> getProducts() {
+        return new ArrayList<Product>(itemSet);
     }
 
-    public void removeItems() {
+    public void removeProducts() {
         itemSet.clear();
     }
 
-    public void updateItem(BasketItem basketItem) {
-        if (itemSet.contains(basketItem)) {
-            for (Iterator<BasketItem> iterator = itemSet.iterator(); iterator.hasNext(); ) {
-                BasketItem item = iterator.next();
-                if (item.equals(basketItem)) {
-                    item.setQuantity(item.getQuantity() + 1);
+    public void updateProduct(Product product) {
+        if (itemSet.contains(product)) {
+            for (Iterator<Product> iterator = itemSet.iterator(); iterator.hasNext(); ) {
+                Product nextProduct = iterator.next();
+                if (nextProduct.equals(product)) {
+                    nextProduct.setAddedQuantity(nextProduct.getAddedQuantity() + 1);
                     return;
                 }
             }
         }
     }
 
-    public void addItem(BasketItem basketItem) {
-        itemSet.add(basketItem);
+    public void addProduct(Product product) {
+        if (itemSet.add(product)) {
+            product.setAdded(true);
+            product.setAddedQuantity(1);
+        };
     }
 }

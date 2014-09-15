@@ -14,6 +14,9 @@ public class Product {
     @SerializedName("price")
     private int price;
 
+    private boolean added;
+    private int addedQuantity;
+
     public String getId() {
         return id;
     }
@@ -36,6 +39,22 @@ public class Product {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public boolean isAdded() {
+        return added;
+    }
+
+    public void setAdded(boolean added) {
+        this.added = added;
+    }
+
+    public int getAddedQuantity() {
+        return addedQuantity;
+    }
+
+    public void setAddedQuantity(int addedQuantity) {
+        this.addedQuantity = addedQuantity;
     }
 
     @Override
