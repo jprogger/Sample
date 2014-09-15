@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Category {
@@ -36,6 +38,12 @@ public class Category {
     }
 
     public List<Product> getProducts() {
+        Collections.sort(products, new Comparator<Product>() {
+            @Override
+            public int compare(Product lhs, Product rhs) {
+                return lhs.getName().compareTo(rhs.getName());
+            }
+        });
         return products;
     }
 
