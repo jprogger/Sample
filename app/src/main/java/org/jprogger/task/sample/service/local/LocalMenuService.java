@@ -105,13 +105,10 @@ public class LocalMenuService implements MenuService {
 
         @Override
         public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            // Only the ID is available
             if (json.isJsonPrimitive()) {
                 final JsonPrimitive primitive = json.getAsJsonPrimitive();
                 return getOrCreate(primitive.getAsString());
             }
-
-            // The whole object is available
             if (json.isJsonObject()) {
                 final JsonObject jsonObject = json.getAsJsonObject();
 
